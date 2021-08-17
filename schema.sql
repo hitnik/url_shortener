@@ -1,0 +1,22 @@
+DROP TABLE IF EXISTS long_urls;
+DROP TABLE IF EXISTS short_urls;
+
+CREATE TABLE long_urls (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  long_url TEXT UNIQUE NOT NULL,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE short_urls (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  long_id INTEGER NOT NULL,
+  short TEXT NOT NULL,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_departments
+    FOREIGN KEY (long_id)
+    REFERENCES long_urls(id)
+);
+
+CREATE INDEX "long_url_index" ON "long_urls" (
+	"long_url"
+);
