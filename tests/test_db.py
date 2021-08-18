@@ -1,4 +1,7 @@
-from app.db import init_db, close_db, get_db
+from app.db import (
+  init_db, close_db, get_db,
+  long_url_exist,
+  )
 from unittest import mock
 
 script = """
@@ -12,6 +15,7 @@ VALUES
   (2, 2, 'yu.tu');
 """
 
+
 def test_init_db(db_path):
     db = init_db(db_path)
     db.executescript(script)
@@ -22,6 +26,7 @@ def test_init_db(db_path):
     assert value_1[2] == 'goo.gl'
     cur.close()
     close_db(db)
+
 
 def test_get_db(db_path):
     init_db(db_path=db_path)
@@ -36,3 +41,11 @@ def test_get_db(db_path):
         cur.close()
         close_db(db)
 
+def test_long_url_exist(db_mock):
+    db_mock.executescript(script)
+    with mock.patch('app.db.get_db') as get_db:
+        get_db.return_value = db_mock
+        with mock.patch('app.db.db_manager') as manager:
+            manager.return_value = db_mock
+            assert long_url_exist('') is False
+            assert long_url_exist('https://www.youtube.com') is True
