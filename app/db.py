@@ -136,7 +136,7 @@ def short_url_exist(url):
         return True
     return False
 
-def get_short_url(short_id):
+def get_short_url(short):
     """ get short_url instance by id
 
     Args:
@@ -145,10 +145,10 @@ def get_short_url(short_id):
     Returns:
         [tuple]: short_url instance
     """
-    sql = "SELECT * FROM short_urls WHERE id = ?;"
+    sql = "SELECT * FROM short_urls WHERE short = ?;"
     with db_manager() as db:
         cur = db.cursor()
-        short = cur.execute(sql, (short_id,)).fetchone()
+        short = cur.execute(sql, (short,)).fetchone()
     return short
 
 
