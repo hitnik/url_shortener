@@ -113,30 +113,28 @@ def insert_short_url(url, long_id):
     with db_manager() as db:
         cur = db.cursor()
         try:
-            -cur.execute(sql, (long_id, url))
+            cur.execute(sql, (long_id, url))
         except sqlite3.IntegrityError:
             return None
         db.commit()
         return cur.lastrowid
 
-def get_short_url(url_long):
-    pass
+
+def get_short_url(short_id):
+    """ get short_url instance by id
+
+    Args:
+        short_id (int): short_url id
+
+    Returns:
+        [tuple]: short_url instance
+    """
+    sql = "SELECT * FROM short_urls WHERE id = ?;"
+    with db_manager() as db:
+        cur = db.cursor()
+        short = cur.execute(sql, (short_id,)).fetchone()
+    return short
 
 
 if __name__ == '__main__':
     db = init_db(DB_PATH)
-    script = """
-        INSERT INTO long_urls (id, long_url)
-        VALUES
-        (1, 'https://www.google.com/'),
-        (2, 'https://www.youtube.com');
-        INSERT INTO short_urls (id, long_id, short)
-        VALUES
-        (1, 1, 'goo.gl'),
-        (2, 2, 'yu.tu');
-        """
-    db.executescript(script)
-    close_db(db)
-    long_id = insert_long_url('https://www.tut.by')
-    print(insert_short_url('http://ex.com/asd', long_id))
-    print(insert_short_url('http://ex.com/asd', long_id))
