@@ -154,7 +154,7 @@ def get_short_url(short):
     return short
 
 
-def get_long_url(id):
+def get_long_url_from_db(id):
     """ get long_url instance by id
 
     Args:

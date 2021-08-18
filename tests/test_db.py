@@ -1,6 +1,6 @@
 from app.db import (
   init_db, close_db, get_db, insert_long_url, insert_short_url,
-  long_url_exist, get_short_url, short_url_exist, get_long_url
+  long_url_exist, get_short_url, short_url_exist, get_long_url_from_db
   )
 from unittest import mock
 
@@ -86,5 +86,5 @@ def test_get_long_url(db_mock):
         with mock.patch('app.db.db_manager') as manager:
             manager.return_value = db_mock
             db_mock.executescript(script)
-            assert type(get_long_url(1)) == tuple
-            assert get_long_url(1)[0] == 1
+            assert type(get_long_url_from_db(1)) == tuple
+            assert get_long_url_from_db(1)[0] == 1
