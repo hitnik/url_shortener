@@ -119,6 +119,22 @@ def insert_short_url(url, long_id):
         db.commit()
         return cur.lastrowid
 
+def short_url_exist(url):
+    """ checks if row with short = url exists
+
+    Args:
+        url (str): url to check
+
+    Returns:
+        [bool]: returns True when exists
+    """
+    sql = "SELECT EXISTS(SELECT * FROM short_urls WHERE short = ?);"
+    with db_manager() as db:
+        cur = db.cursor()
+        exist = cur.execute(sql, (url,)).fetchone()
+    if exist[0] > 0:
+        return True
+    return False
 
 def get_short_url(short_id):
     """ get short_url instance by id
