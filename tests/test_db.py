@@ -67,8 +67,8 @@ def test_get_short_url(db_mock):
         with mock.patch('app.db.db_manager') as manager:
             manager.return_value = db_mock
             db_mock.executescript(script)
-            assert type(get_short_url(1)) == tuple
-            assert get_short_url(2)[0] == 2
+            assert type(get_short_url('goo.gl')) == tuple
+            assert get_short_url('goo.gl')[0] == 1
 
 
 def test_short_url_exist(db_mock):
