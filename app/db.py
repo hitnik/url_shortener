@@ -163,7 +163,7 @@ def get_long_url(id):
     Returns:
         [tuple]: long_url instance
     """
-    sql = "SELECT * FROM long_urls WHERE long = ?;"
+    sql = "SELECT * FROM long_urls WHERE id = ?;"
     with db_manager() as db:
         cur = db.cursor()
         instance = cur.execute(sql, (id,)).fetchone()
