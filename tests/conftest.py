@@ -2,7 +2,7 @@ import os
 import tempfile
 import pytest
 from app.db import init_db
-from app.main import parser
+from app.utils import parser
 
 
 @pytest.fixture
