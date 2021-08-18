@@ -6,7 +6,7 @@ from app.db import init_db
 
 @pytest.fixture
 def db_path():
-    db_path = os.path.join(tempfile.mkdtemp(),'db.sqlite3')
+    db_path = os.path.join(tempfile.mkdtemp(), 'db.sqlite3')
     return db_path
 
 
