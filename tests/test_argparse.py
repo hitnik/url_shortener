@@ -1,5 +1,6 @@
 from argparse import Namespace
 
+
 def test_parser(argparser):
     args = argparser.parse_args(['test_url', '--generate', '--short_url', 'short'])
     
