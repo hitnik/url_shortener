@@ -1,4 +1,3 @@
-from os import access
 from app.utils import get_long_url
 from tests.test_db import script
 import pytest
@@ -14,5 +13,5 @@ def  test_get_long_url(db_mock):
             with pytest.raises(Exception, match=r".* URL does .*"):
                 get_long_url('raise')
             inst = get_long_url('goo.gl')
-            assert type(inst) is tuple
-            assert inst[0] == 1
+            assert type(inst) is str
+            assert inst == 'https://www.google.com/'
