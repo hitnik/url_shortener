@@ -1,6 +1,6 @@
 from app.db import (
-  init_db, close_db, get_db,
-  long_url_exist,
+  init_db, close_db, get_db, insert_long_url, insert_short_url,
+  long_url_exist, insert_long_url, insert_short_url, get_short_url
   )
 from unittest import mock
 
@@ -49,3 +49,11 @@ def test_long_url_exist(db_mock):
             manager.return_value = db_mock
             assert long_url_exist('') is False
             assert long_url_exist('https://www.youtube.com') is True
+
+def test_insert(db_mock):
+      with mock.patch('app.db.get_db') as get_db:
+        get_db.return_value = db_mock
+        with mock.patch('app.db.db_manager') as manager:
+            manager.return_value = db_mock
+            assert insert_long_url('www.test.ru') == 1
+            assert insert_short_url('short.ru/a23', 1) == 1 
