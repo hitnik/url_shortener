@@ -8,5 +8,5 @@ def test_parser(argparser):
     assert args.url is 'test_url'
     assert args.generate is True
     assert args.short_url is 'short'
-
+    
 

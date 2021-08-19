@@ -7,7 +7,7 @@ from app.utils import parser
 
 @pytest.fixture
 def db_path():
-    db_path = os.path.join(tempfile.mkdtemp(), 'db.sqlite3')
+    db_path = os.path.join(tempfile.mkdtemp(), 'db1.sqlite3')
     return db_path
 
 
