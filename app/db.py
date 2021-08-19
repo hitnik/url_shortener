@@ -153,8 +153,22 @@ def get_short_url(short):
         short = cur.execute(sql, (short,)).fetchone()
     return short
 
+def get_short_url_by_long(long_id):
+    """ get short_url instance by long id
 
-def get_long_url_from_db(id):
+    Args:
+        long_id (int): long id
+
+    Returns:
+        [tuple]: short_url instance
+    """
+    sql = "SELECT * FROM short_urls WHERE long_id = ?;"
+    with db_manager() as db:
+        cur = db.cursor()
+        short = cur.execute(sql, (long_id,)).fetchone()
+    return short
+
+def get_long_url_from_db(id=None, url=None):
     """ get long_url instance by id
 
     Args:
@@ -163,10 +177,16 @@ def get_long_url_from_db(id):
     Returns:
         [tuple]: long_url instance
     """
-    sql = "SELECT * FROM long_urls WHERE id = ?;"
+
+    sql_id = "SELECT * FROM long_urls WHERE id = ?;"
+    sql_url = "SELECT * FROM long_urls WHERE long_url = ?;"
+    instance = None
     with db_manager() as db:
         cur = db.cursor()
-        instance = cur.execute(sql, (id,)).fetchone()
+        if id and not url:
+            instance = cur.execute(sql_id, (id,)).fetchone()
+        elif url and not id:
+            instance = cur.execute(sql_url, (url,)).fetchone()
     return instance
 
 
