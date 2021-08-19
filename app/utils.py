@@ -3,7 +3,6 @@ import textwrap
 from db import (insert_long_url, short_url_exist, get_short_url,
                 get_long_url_from_db, long_url_exist,
                 get_short_url_by_long, insert_short_url,
-                insert_long_url
                 )
 import shortuuid
 from urllib.parse import urlunsplit
@@ -37,10 +36,12 @@ def parser():
                                 """),
                         )
     parser.add_argument('--generate', action='store_true', default=False,
-                        help="""If argument presented, URL param will be defined as long url and it wil be shorten."""
+                        help="If argument presented, URL param will be " +
+                        "defined as long url and it wil be shorten."
                         )
     parser.add_argument('--short_url', action='store', default=None,
-                        help="""Use this argument and cpecify short URL, if you want to use custom short_url."""
+                        help="Use this argument and cpecify short URL, " +
+                        "if you want to use custom short_url."
                         )
 
     return parser
@@ -50,7 +51,7 @@ class Shortener:
 
     @staticmethod
     def get_long_url(short):
-        """ get long url by short url 
+        """ get long url by short url
 
         Args:
             short (str):  short url

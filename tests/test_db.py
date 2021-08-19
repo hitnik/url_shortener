@@ -16,13 +16,16 @@ VALUES
   (1, 1, 'goo.gl'),
   (2, 2, 'yu.tu');
 """
+
+
 @contextmanager
 def manager_mock(db_mock, init_db, db_manager):
     with mock.patch(init_db) as get_db:
         get_db.return_value = db_mock
         with mock.patch(db_manager) as manager:
             manager.return_value = db_mock
-            yield lambda : manager
+            yield lambda: manager
+
 
 def test_init_db(db_path):
     db = init_db(db_path)
@@ -76,14 +79,17 @@ def test_short_url_exist(db_mock):
         assert short_url_exist('') is False
         assert short_url_exist('goo.gl') is True
 
+
 def test_get_long_url(db_mock):
     db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'): 
+    with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):
         assert get_long_url_from_db() is None
         assert type(get_long_url_from_db(id=1)) == tuple
         assert get_long_url_from_db(id=1)[0] == 1
-        assert type(get_long_url_from_db(url='https://www.google.com/')) == tuple
+        assert type(get_long_url_from_db(
+            url='https://www.google.com/')) == tuple
         assert get_long_url_from_db(url='https://www.google.com/')[0] == 1
+
 
 def test_get_short_by_long(db_mock):
     db_mock.executescript(script)

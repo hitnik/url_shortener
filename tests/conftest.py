@@ -15,6 +15,7 @@ def db_path():
 def db_mock(db_path):
     return init_db(db_path)
 
+
 @pytest.fixture
 def argparser():
     return parser()
