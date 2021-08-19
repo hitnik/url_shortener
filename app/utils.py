@@ -1,10 +1,13 @@
 import argparse
 import textwrap
-from db import ( short_url_exist, get_short_url,
+from db import ( insert_long_url, short_url_exist, get_short_url,
                     get_long_url_from_db, long_url_exist,
-                    get_short_url_by_long
+                    get_short_url_by_long, insert_short_url,
+                    insert_long_url
                 )
-
+import shortuuid
+from urllib.parse import urlunsplit
+from config import NETLOC, SCHEME
 
 def parser():
     parser = argparse.ArgumentParser(
@@ -35,6 +38,17 @@ class Shortener:
 
     @staticmethod
     def get_long_url(short):
+        """ get long url by short url 
+
+        Args:
+            short (str):  short url
+
+        Raises:
+            Exception: Raises Exception when short url does not exists
+
+        Returns:
+            [str]: short url
+        """
         if short_url_exist(short):
             short_inst = get_short_url(short)
             long_inst = get_long_url_from_db(id=short_inst[1])
@@ -45,7 +59,23 @@ class Shortener:
 
     @staticmethod
     def gen_short_url(long):
+        """ Generates short url from long url.
+            If long url exists in DB return existing short url,
+            otherwise generate new short url
+
+        Args:
+            long (str): long url
+
+        Returns:
+            str: short url
+        """
         if long_url_exist(long):
             long_inst = get_long_url_from_db(url=long)
             short_inst = get_short_url_by_long(long_inst[0])
             return short_inst[2]
+        else:
+            uuid = shortuuid.uuid(name=long)[:7]
+            short_url = urlunsplit((SCHEME, NETLOC, uuid, '', ''))
+            long_id = insert_long_url(long)
+            insert_short_url(short_url, long_id)
+            return short_url
