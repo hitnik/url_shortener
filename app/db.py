@@ -6,6 +6,7 @@ BASEDIR = os.path.dirname(__file__)
 
 DB_PATH = os.path.join(BASEDIR, 'db.sqlite3')
 
+
 def init_db(db_path):
     """init sqlite database, create sqlite file if needed
 
@@ -47,15 +48,6 @@ def db_manager():
         yield db
     finally:
         close_db(db)
-
-
-@contextmanager
-def cur_manager(db):
-    cur = db.cursor()
-    try:
-        yield cur
-    finally:
-        cur.close()
 
 
 def long_url_exist(url):
@@ -152,6 +144,7 @@ def get_short_url(short):
         short = cur.execute(sql, (short,)).fetchone()
     return short
 
+
 def get_short_url_by_long(long_id):
     """ get short_url instance by long id
 
@@ -166,6 +159,7 @@ def get_short_url_by_long(long_id):
         cur = db.cursor()
         short = cur.execute(sql, (long_id,)).fetchone()
     return short
+
 
 def get_long_url_from_db(id=None, url=None):
     """ get long_url instance by id
