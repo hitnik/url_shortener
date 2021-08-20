@@ -1,11 +1,14 @@
 import sqlite3
 import os
 from contextlib import contextmanager
-
-BASEDIR = os.path.dirname(__file__)
-
-DB_PATH = os.path.join(BASEDIR, 'db.sqlite3')
-
+import sys
+from attr.setters import NO_OP
+from flask import g, current_app
+from config import DB_PATH, BASEDIR
+try:
+    from app import app
+except ModuleNotFoundError:
+    pass
 
 def init_db(db_path):
     """init sqlite database, create sqlite file if needed
@@ -28,18 +31,35 @@ def get_db():
         sqlite3.Connection
     """
     db = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
-    return db
+    try:
+        current_app
+        if 'db' not in g:
+            g.db = db
+            g.db.row_factory = sqlite3.Row
+            return g.db
+    except RuntimeError:
+        pass
+    finally:
+        return db
 
 
-def close_db(db):
+def close_db(db=None):
     """ close sqlite3.Connection
 
     Args:
         db (sqlite3.Connection)
     """
+    if db is None:
+        try:
+            current_app
+            db = g.pop('db', None)
+        except RuntimeError:
+            pass
     if db is not None:
-        db.close()
-
+        try:
+            db.close()
+        except AttributeError:
+            pass
 
 @contextmanager
 def db_manager():
@@ -182,6 +202,8 @@ def get_long_url_from_db(id=None, url=None):
             instance = cur.execute(sql_url, (url,)).fetchone()
     return instance
 
+def init_app(app):
+    app.teardown_appcontext(close_db)
 
 if __name__ == '__main__':
     db = init_db(DB_PATH)

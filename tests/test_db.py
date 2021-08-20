@@ -5,6 +5,8 @@ from app.db import (
   )
 from unittest import mock
 from contextlib import contextmanager
+import sqlite3
+import pytest
 
 script = """
 INSERT INTO long_urls (id, long_url)
@@ -39,7 +41,7 @@ def test_init_db(db_path):
     close_db(db)
 
 
-def test_get_db(db_path):
+def test_get_db(db_path, app):
     init_db(db_path=db_path)
     with mock.patch('app.db.DB_PATH', db_path):
         db = get_db()
@@ -49,8 +51,25 @@ def test_get_db(db_path):
         value_1 = cur.execute(sql, (1, 1)).fetchone()
         assert value_1 is not None
         assert value_1[2] == 'goo.gl'
-        cur.close()
         close_db(db)
+        with app.app_context():
+            db = get_db()
+            db.execute('SELECT 1')
+
+
+def test_close_db(db_path, app):
+    init_db(db_path=db_path)
+    with mock.patch('app.db.DB_PATH', db_path):
+        with app.app_context():
+            db = get_db()
+            db.execute('SELECT 1')
+        
+        with pytest.raises(sqlite3.ProgrammingError) as e:
+            db.execute('SELECT 1')
+        db = get_db()
+        close_db(db)
+        with pytest.raises(sqlite3.ProgrammingError) as e:
+            db.execute('SELECT 1')
 
 
 def test_long_url_exist(db_mock):

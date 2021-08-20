@@ -19,6 +19,7 @@
                 </div>
             </div>
         </div>
+        {% if  context['errors'][0] is not defined %}
         {% if context["long"] or context["short"] %}
             <div class="row pt-2">
                 <div class="col-lg-10 col-md-10 mx-auto">
@@ -63,7 +64,11 @@
                 </div>
             </div>
         {% endif %}
-    
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                A simple danger alert—check it out!
+            </div>
+        {% endif %}
     </section>
     
 {% endblock content %}
