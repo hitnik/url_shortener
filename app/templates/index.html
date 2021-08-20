@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div>
+        <form>
+            <div class="mb-3">
+                <label for="long" class="form-label">Long url</label>
+                <input name="long" class="form-control" id="long", placeholder="Paste long url">
+            </div>
+            <div class="mb-3">
+                <label for="short" class="form-label">Short url</label>
+                <input name="short" class="form-control" id="short" placeholder="Paste short url">
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">Submit</butto >
+        </form>
+    <div>
+{% endblock content %}

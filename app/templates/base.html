@@ -11,6 +11,22 @@
     <title>URL shortener</title>
 </head>
 <body>
-{% block content %}{% endblock %}
+<header>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a href={{ url_for('index') }} class="navbar-brand d-flex align-items-center"><strong>URL Shortener</strong></a>
+    </div>
+</nav>
+</header>
+<main>
+    <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </section>
+</main>
+
 </body>
 </html>
