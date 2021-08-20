@@ -4,7 +4,7 @@ from app.utils import (
     URLExistsError, URLNotFoundError
 )
 from app.db import DB_PATH, init_db
-
+from app import app
 
 def main():
     if not os.path.exists(DB_PATH):
@@ -25,4 +25,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    app.run()
