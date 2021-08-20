@@ -1,17 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div>
-        <form>
-            <div class="mb-3">
-                <label for="long" class="form-label">Long url</label>
-                <input name="long" class="form-control" id="long", placeholder="Paste long url">
+    <section class="py-5 text-center container">
+        <div class="row p-3">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <div class=>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="long" class="form-label">Long url</label>
+                            <input name="long" class="form-control" id="long", placeholder="Paste long url">
+                        </div>
+                        <div class="mb-3">
+                            <label for="short" class="form-label">Short url</label>
+                            <input name="short" class="form-control" id="short" placeholder="Paste short url">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                    </form>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="short" class="form-label">Short url</label>
-                <input name="short" class="form-control" id="short" placeholder="Paste short url">
+        </div>
+        {% if long or short  %}
+        <div class="row pt-2">
+            <div class="col-lg-10 col-md-10 mx-auto">
+            <div class="card border-success">
+                <div class="card-body">
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-lg">Submit</butto >
-        </form>
-    <div>
+        </div>
+        {% endif %}
+        
+    </div>
+    </section>
+
 {% endblock content %}
