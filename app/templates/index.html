@@ -19,18 +19,51 @@
                 </div>
             </div>
         </div>
-        {% if long or short  %}
-        <div class="row pt-2">
-            <div class="col-lg-10 col-md-10 mx-auto">
-            <div class="card border-success">
-                <div class="card-body">
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+        {% if context["long"] or context["short"] %}
+            <div class="row pt-2">
+                <div class="col-lg-10 col-md-10 mx-auto">
+                    <div class="card border-secondary text-start">
+                        <div class="card-body">
+                            {% if context["long"]  %}
+                                <div class="border-bottom border-secondary pb-1" >
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="90%"%>
+                                                <h6 class="card-subtitle pt-1 mb-2 text-muted text-start">Long url</h6>
+                                                <a href="{{ context["long"] }}" id="link-long" class="link-secondary ">{{ context["long"] }}</a>
+                                            </td>
+                                            <td>
+                                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                                    <button class="btn btn-outline-dark btn-sm me-md-2" onClick="copyToClipboard('link-long')">Copy</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            {% endif %}
+                            {% if context["short"] %}
+                                <div class="pt-1">
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="90%"%>
+                                                <h6 class="card-subtitle pt-1 mb-2 text-muted text-start">Short url</h6>
+                                                <a href="{{ context["short"] }}" id="link-short" class="link-primary">{{ context["short"] }}</a>
+                                            </td>
+                                            <td>
+                                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                                    <button class="btn btn-outline-dark btn-sm me-md-2" onClick="copyToClipboard('link-short')">Copy</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
         {% endif %}
-        
-    </div>
+    
     </section>
-
+    
 {% endblock content %}
