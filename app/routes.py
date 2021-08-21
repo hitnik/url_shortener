@@ -6,6 +6,8 @@ from utils import Shortener, URLExistsError, URLNotFoundError
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """index view of url_shortener app"""
+    
     short_out = long_out = None
     if request.method == "POST":
         long = request.form.get('long')
@@ -31,4 +33,5 @@ def index():
 
 @app.errorhandler(400)
 def page_not_found(e):
+    """400 error handling view"""
     return render_template('400.html', message=e), 400

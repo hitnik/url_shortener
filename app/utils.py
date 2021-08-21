@@ -98,6 +98,9 @@ class Shortener:
             if long_url_exist(long):
                 long_inst = get_long_url_from_db(url=long)
                 insert_short_url(short, long_inst[0])
+            else: 
+                long_id = insert_long_url(long)
+                insert_short_url(short, long_id)
             return short
         else:
             raise URLExistsError

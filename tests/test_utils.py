@@ -29,4 +29,5 @@ def test_save_url(db_mock):
         with pytest.raises(URLExistsError):
             Shortener.save_url('goo.gl', 'https://www.google.com/')
         short = Shortener.save_url('on.by/ptrer', 'http://www.onliner.by')
-        assert isinstance(short, str)
+        assert short == 'on.by/ptrer'
+        assert Shortener.get_long_url('on.by/ptrer') == 'http://www.onliner.by'

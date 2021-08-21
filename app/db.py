@@ -1,16 +1,13 @@
 import sqlite3
 import os
 from contextlib import contextmanager
-import sys
-from attr.setters import NO_OP
 from flask import g, current_app
 from config import DB_PATH, BASEDIR
-try:
-    from app import app
-except ModuleNotFoundError:
-    pass
+from flask.cli import with_appcontext
+import click
 
-def init_db(db_path):
+
+def init_db(db_path=DB_PATH):
     """init sqlite database, create sqlite file if needed
 
     Args:
@@ -60,6 +57,7 @@ def close_db(db=None):
             db.close()
         except AttributeError:
             pass
+
 
 @contextmanager
 def db_manager():
@@ -202,8 +200,18 @@ def get_long_url_from_db(id=None, url=None):
             instance = cur.execute(sql_url, (url,)).fetchone()
     return instance
 
+
+@click.command('init-db')
+@with_appcontext
+def init_db_command():
+    """Clear the existing data and create new tables."""
+    init_db()
+    click.echo('Initialized the database.')
+
+
 def init_app(app):
     app.teardown_appcontext(close_db)
+    app.cli.add_command(init_db_command)
 
 if __name__ == '__main__':
     db = init_db(DB_PATH)
