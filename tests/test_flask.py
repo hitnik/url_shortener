@@ -1,9 +1,8 @@
 from test_main import get_short_url
 from test_db import script, manager_mock
-from app.db import get_db
+from app.utils import URLExistsError
 
 def test_index(client, app, db_mock, captured_templates):
-    print(app.config['DATABASE'])
     with app.app_context():
         resp = client.get('/')
         assert resp.status_code == 200
@@ -19,3 +18,4 @@ def test_index(client, app, db_mock, captured_templates):
             assert resp.status_code == 400
             template, context = captured_templates[2]
             assert template.name == "400.html"
+            assert URLExistsError().message in str(context['message'])

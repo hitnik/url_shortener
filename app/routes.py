@@ -1,8 +1,8 @@
 from app import app
 from flask import render_template
 from flask import request, abort
-from utils import Shortener, URLExistsError
-import sys
+from utils import Shortener, URLExistsError, URLNotFoundError
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -19,9 +19,13 @@ def index():
                     short_out = Shortener.save_url(long=long, short=short)
                     long_out = long
                 except URLExistsError as e:
-                    abort(400, description="This short URL already exists")
-        else:
-            pass
+                    abort(400, description=e.message)
+        elif short:
+            try:
+                long_out = Shortener.get_long_url(short)
+                short_out = short
+            except URLNotFoundError as e:
+                abort(400, description=e.message)
     return render_template('index.html', long=long_out, short=short_out), 200
 
 
