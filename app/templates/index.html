@@ -4,34 +4,39 @@
     <section class="py-5 text-center container">
         <div class="row p-3">
             <div class="col-lg-6 col-md-8 mx-auto">
-                <div class=>
+                <div>
                     <form method="post">
                         <div class="mb-3">
                             <label for="long" class="form-label">Long url</label>
-                            <input name="long" class="form-control" id="long", placeholder="Paste long url">
+                            <div class="input-group mb-3">
+                                <input name="long" class="form-control" id="long", placeholder="Paste long url">
+                                <button class="btn btn-outline-secondary" onClick="clearInput('long')">Clear</button>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="short" class="form-label">Short url</label>
-                            <input name="short" class="form-control" id="short" placeholder="Paste short url">
+                            <div class="input-group mb-3">
+                                <input name="short" class="form-control" id="short" placeholder="Paste short url">
+                                <button class="btn btn-outline-secondary" onClick="clearInput('short')">Clear</button>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg">Submit</button>
                     </form>
                 </div>
             </div>
         </div>
-        {% if  context['errors'][0] is not defined %}
-        {% if context["long"] or context["short"] %}
+        {% if long or short %}
             <div class="row pt-2">
                 <div class="col-lg-10 col-md-10 mx-auto">
                     <div class="card border-secondary text-start">
                         <div class="card-body">
-                            {% if context["long"]  %}
+                            {% if long  %}
                                 <div class="border-bottom border-secondary pb-1" >
                                     <table width="100%">
                                         <tr>
                                             <td width="90%"%>
                                                 <h6 class="card-subtitle pt-1 mb-2 text-muted text-start">Long url</h6>
-                                                <a href="{{ context["long"] }}" id="link-long" class="link-secondary ">{{ context["long"] }}</a>
+                                                <a href="{{ long }}" id="link-long" class="link-secondary ">{{ long }}</a>
                                             </td>
                                             <td>
                                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -42,13 +47,13 @@
                                     </table>
                                 </div>
                             {% endif %}
-                            {% if context["short"] %}
+                            {% if short %}
                                 <div class="pt-1">
                                     <table width="100%">
                                         <tr>
                                             <td width="90%"%>
                                                 <h6 class="card-subtitle pt-1 mb-2 text-muted text-start">Short url</h6>
-                                                <a href="{{ context["short"] }}" id="link-short" class="link-primary">{{ context["short"] }}</a>
+                                                <a href="{{ short }}" id="link-short" class="link-primary">{{ short }}</a>
                                             </td>
                                             <td>
                                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -62,11 +67,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        {% endif %}
-        {% else %}
-            <div class="alert alert-danger" role="alert">
-                A simple danger alert—check it out!
             </div>
         {% endif %}
     </section>

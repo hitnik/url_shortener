@@ -1,7 +1,7 @@
 from app.db import (
   init_db, close_db, get_db, insert_long_url, insert_short_url,
   long_url_exist, get_short_url, short_url_exist, get_long_url_from_db,
-  get_short_url_by_long
+  get_short_url_by_long, close_db
   )
 from unittest import mock
 from contextlib import contextmanager
@@ -54,7 +54,8 @@ def test_get_db(db_path, app):
         close_db(db)
         with app.app_context():
             db = get_db()
-            db.execute('SELECT 1')
+            db.execute('SELECT * FROM long_urls')
+            close_db(db)
 
 
 def test_close_db(db_path, app):

@@ -7,7 +7,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-from db import get_db, DB_PATH, init_app
+from db import DB_PATH, init_app
 
 app.config.from_mapping(
         DATABASE=os.path.join(app.instance_path, DB_PATH),

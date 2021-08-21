@@ -37,8 +37,7 @@ def app(db_path):
     )
     app = create_app
     with app.app_context():
-        db = init_db(db_path)
-        
+        init_db(db_path)
     return app
 
 @pytest.fixture
