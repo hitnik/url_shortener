@@ -1,16 +1,22 @@
-from main import main
-import pytest
-from test_db import script, manager_mock
 from unittest import mock
-from app.db import get_db,  init_db
-import shortuuid
 from urllib.parse import urlunsplit
-from app.config import SCHEME, NETLOC
+
+import pytest
+import shortuuid
+from app.config import NETLOC, SCHEME
+from app.db import get_db, init_db
+from main import main
+
+from test_db import manager_mock, script
 
 
 def get_short_url(url):
     uuid = shortuuid.uuid(name=url)[:7]
     return urlunsplit((SCHEME, NETLOC, uuid, '', ''))
+
+
+def build_url(path):
+    return urlunsplit((SCHEME, NETLOC, path, '', ''))
 
 
 def test_main_noparams(db_path, mocker):
@@ -20,15 +26,17 @@ def test_main_noparams(db_path, mocker):
 
 
 @pytest.mark.parametrize('args, output',
-                                [(['on.ln'], "ERROR!!! URL does not exists"),
-                                    (['goo.gl'], 'https://www.google.com/'), (['https://www.google.com/', '--generate'],
-                                     'goo.gl'),  
-                                    (['https://www.onliner.by', '--generate'], get_short_url('https://www.onliner.by')),
-                                    (['https://www.onliner.by', '--generate', '--short_url', 'onl.by'], 'onl.by'),
-                                    (['https://www.google.com/', '--generate', '--short_url', 'goo.gl'],
-                                        "ERROR!!! This url already in database"),
-                                    ]
-                            )
+                         [(['on.ln'], "ERROR!!! URL does not exists"),
+                          (['goo.gl'], 'https://www.google.com/'),
+                          (['https://www.google.com/', '--generate'], build_url('goo.gl')),
+                          (['https://www.onliner.by', '--generate'],
+                           get_short_url('https://www.onliner.by')),
+                          (['https://www.onliner.by', '--generate',
+                            '--short_url', 'onl.by'], build_url('onl.by')),
+                          (['https://www.google.com/', '--generate', '--short_url', 'goo.gl'],
+                           "ERROR!!! This url already in database"),
+                          ]
+                         )
 def test_main(db_path, argparser, mocker, capsys, args, output):
     mocker.patch('main.DB_PATH', db_path)
     init_db(db_path=db_path)
