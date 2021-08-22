@@ -31,7 +31,7 @@ def argparser():
 @pytest.fixture
 def app(db_path):
     create_app.config.from_mapping(
-        SERVER_NAME = '127.0.0.1',
+        SERVER_NAME = 'localhost.localdomain',
         TESTING = True,
         DATABASE = db_path,
     )
