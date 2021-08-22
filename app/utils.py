@@ -5,8 +5,9 @@ from db import (insert_long_url, short_url_exist, get_short_url,
                 get_short_url_by_long, insert_short_url,
                 )
 import shortuuid
-from urllib.parse import urlunsplit
+from urllib.parse import urlunsplit, urlsplit
 from config import NETLOC, SCHEME
+from posixpath import basename
 
 
 class URLExistsError(Exception):
@@ -49,8 +50,15 @@ def parser():
 
 class Shortener:
 
-    @staticmethod
-    def get_long_url(short):
+    def __parse_short_url(self, url):
+        short = urlsplit(url)
+        return basename(short.path)
+
+    def __unparse_short_url(self, path):
+        return urlunsplit((SCHEME, NETLOC, path, '', ''))
+
+    @classmethod
+    def get_long_url(cls, short):
         """ get long url by short url
 
         Args:
@@ -62,15 +70,16 @@ class Shortener:
         Returns:
             [str]: short url
         """
-        if short_url_exist(short):
-            short_inst = get_short_url(short)
+        short_path = cls().__parse_short_url(short)
+        if short_url_exist(short_path):
+            short_inst = get_short_url(short_path)
             long_inst = get_long_url_from_db(id=short_inst[1])
             return long_inst[1]
         else:
             raise URLNotFoundError
 
-    @staticmethod
-    def gen_short_url(long):
+    @classmethod
+    def gen_short_url(cls, long):
         """ Generates short url from long url.
             If long url exists in DB return existing short url,
             otherwise generate new short url
@@ -84,12 +93,12 @@ class Shortener:
         if long_url_exist(long):
             long_inst = get_long_url_from_db(url=long)
             short_inst = get_short_url_by_long(long_inst[0])
-            return short_inst[2]
+            return cls().__unparse_short_url(short_inst[2])
         else:
             uuid = shortuuid.uuid(name=long)[:7]
             short_url = urlunsplit((SCHEME, NETLOC, uuid, '', ''))
             long_id = insert_long_url(long)
-            insert_short_url(short_url, long_id)
+            insert_short_url(uuid, long_id)
             return short_url
 
     @staticmethod
@@ -101,6 +110,6 @@ class Shortener:
             else: 
                 long_id = insert_long_url(long)
                 insert_short_url(short, long_id)
-            return short
+            return urlunsplit((SCHEME, NETLOC, short, '', ''))
         else:
             raise URLExistsError

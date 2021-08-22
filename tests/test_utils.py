@@ -1,6 +1,8 @@
 from app.utils import Shortener, URLNotFoundError, URLExistsError
 from tests.test_db import script, manager_mock
 import pytest
+from urllib.parse import urlunsplit
+from app.config import NETLOC, SCHEME
 
 
 def test_get_long_url(db_mock):
@@ -18,7 +20,7 @@ def test_get_short_url(db_mock):
     with manager_mock(db_mock, 'db.get_db', 'db.db_manager'):
         inst = Shortener.gen_short_url('https://www.google.com/')
         assert type(inst) is str
-        assert inst == 'goo.gl'
+        assert inst == urlunsplit((SCHEME, NETLOC, 'goo.gl', '', ''))
         inst = Shortener.gen_short_url('http://www.onliner.by')
         assert type(inst) is str
 
