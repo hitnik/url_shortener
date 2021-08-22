@@ -1,12 +1,11 @@
-from app.db import (
-  init_db, close_db, get_db, insert_long_url, insert_short_url,
-  long_url_exist, get_short_url, short_url_exist, get_long_url_from_db,
-  get_short_url_by_long, close_db
-  )
-from unittest import mock
-from contextlib import contextmanager
 import sqlite3
+from contextlib import contextmanager
+from unittest import mock
+
 import pytest
+from app.db import (close_db, get_db, get_long_url_from_db, get_short_url,
+                    get_short_url_by_long, init_db, insert_long_url,
+                    insert_short_url, long_url_exist, short_url_exist)
 
 script = """
 INSERT INTO long_urls (id, long_url)
@@ -89,7 +88,7 @@ def test_insert(db_mock):
 def test_get_short_url(db_mock):
     db_mock.executescript(script)
     with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):
-        assert type(get_short_url('goo.gl')) == tuple
+        assert isinstance(get_short_url('goo.gl'), tuple)
         assert get_short_url('goo.gl')[0] == 1
 
 
@@ -104,15 +103,15 @@ def test_get_long_url(db_mock):
     db_mock.executescript(script)
     with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):
         assert get_long_url_from_db() is None
-        assert type(get_long_url_from_db(id=1)) == tuple
+        assert isinstance(get_long_url_from_db(id=1), tuple)
         assert get_long_url_from_db(id=1)[0] == 1
-        assert type(get_long_url_from_db(
-            url='https://www.google.com/')) == tuple
+        assert isinstance(get_long_url_from_db(
+            url='https://www.google.com/'), tuple) 
         assert get_long_url_from_db(url='https://www.google.com/')[0] == 1
 
 
 def test_get_short_by_long(db_mock):
     db_mock.executescript(script)
     with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):
-        assert type(get_short_url_by_long(1)) == tuple
+        assert isinstance(get_short_url_by_long(1), tuple)
         assert get_short_url_by_long(2)[0] == 2

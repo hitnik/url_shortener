@@ -1,11 +1,13 @@
-from main import main
-import pytest
-from test_db import script, manager_mock
 from unittest import mock
-from app.db import get_db,  init_db
-import shortuuid
 from urllib.parse import urlunsplit
-from app.config import SCHEME, NETLOC
+
+import pytest
+import shortuuid
+from app.config import NETLOC, SCHEME
+from app.db import get_db, init_db
+from main import main
+
+from test_db import manager_mock, script
 
 
 def get_short_url(url):
