@@ -56,12 +56,17 @@ python main.py <short url>
 
 <p>&nbsp;</p>
 
-## application web interface
+## application web interface (version > 2.0)
 
 <p>&nbsp;</p>
 
 ```console
 export FLASK_APP=main
+export SECRET_KEY=<your_secret>
 flask init-db
-flask run
+flask run --port=80
 ```
+
+<p>&nbsp;</p>
+
+### Access application at http://localhost
