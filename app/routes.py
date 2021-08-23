@@ -44,6 +44,7 @@ def page_not_found(e):
 
 @app.route('/<short>')
 def redirect_short(short):
+    """redirect by short url view"""
     if short_url_exist(short):
         long_url = Shortener.get_long_url(short)
         return redirect(long_url)
