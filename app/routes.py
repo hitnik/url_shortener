@@ -28,7 +28,7 @@ def index():
         elif short:
             try:
                 long_out = Shortener.get_long_url(short)
-                short_out = short
+                short_out = Shortener.unparse_short_url(short)
             except URLNotFoundError as e:
                 abort(400, description=e.message)
         else:

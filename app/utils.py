@@ -54,7 +54,8 @@ class Shortener:
         short = urlsplit(url)
         return basename(short.path)
 
-    def __unparse_short_url(self, path):
+    @staticmethod
+    def unparse_short_url(path):
         return urlunsplit((SCHEME, NETLOC, path, '', ''))
 
     @classmethod
@@ -93,7 +94,7 @@ class Shortener:
         if long_url_exist(long):
             long_inst = get_long_url_from_db(url=long)
             short_inst = get_short_url_by_long(long_inst[0])
-            return cls().__unparse_short_url(short_inst[2])
+            return cls.unparse_short_url(short_inst[2])
         else:
             uuid = shortuuid.uuid(name=long)[:7]
             short_url = urlunsplit((SCHEME, NETLOC, uuid, '', ''))
