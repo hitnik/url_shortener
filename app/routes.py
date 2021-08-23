@@ -1,6 +1,10 @@
 from app import app
-from flask import render_template, flash, request, abort
+from flask import (
+                    render_template, flash,
+                     request, abort, redirect
+                    )
 from utils import Shortener, URLExistsError, URLNotFoundError
+from db import short_url_exist
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -36,3 +40,11 @@ def index():
 def page_not_found(e):
     """400 error handling view"""
     return render_template('400.html', message=e), 400
+
+
+@app.route('/<short>')
+def redirect_short(short):
+    if short_url_exist(short):
+        long_url = Shortener.get_long_url(short)
+        return redirect(long_url)
+    abort(400, description=URLNotFoundError().message)

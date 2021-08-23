@@ -45,3 +45,12 @@ def test_index_show_message(app, client, captured_templates):
         resp = client.post('/', data={'long': '', 'short': ''})
         assert resp.status_code == 200
         assert b'At least one field should be filled.' in resp.data
+
+def test_redirect(app, client, db_mock):
+    with app.app_context():
+        db_mock.executescript(script)
+        with manager_mock(db_mock, 'db.get_db', 'db.db_manager'):
+            resp = client.get('/goo.gl')
+            assert resp.status_code == 302
+            resp = client.get('/abc')
+            assert resp.status_code == 400
