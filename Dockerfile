@@ -9,7 +9,8 @@ COPY . .
 #set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV FLASK_APP=main
+ENV FLASK_APP=wsgi.py
+ENV FLASK_ENV=production
 
 
 #install dependencies

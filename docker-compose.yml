@@ -4,6 +4,7 @@ services:
   short:
     build: ./
     entrypoint: [ "sh","/usr/src/app/entrypoint.sh"]
+    command: gunicorn --bind 0.0.0.0:5000 wsgi:app
     ports:
       - 80:5000
     env_file:
