@@ -2,11 +2,14 @@ import os
 import sqlite3
 from contextlib import contextmanager
 
-BASEDIR = os.path.dirname(__file__)
-DB_PATH = os.path.join(BASEDIR, 'db.sqlite3')
+import click
+from flask import current_app, g
+from flask.cli import with_appcontext
+
+from config import BASEDIR, DB_PATH
 
 
-def init_db(db_path):
+def init_db(db_path=DB_PATH):
     """init sqlite database, create sqlite file if needed """
     db = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)
     with open(os.path.join(BASEDIR, 'schema.sql'), 'rb') as file:
@@ -17,13 +20,32 @@ def init_db(db_path):
 def get_db():
     """returns sqlite3 connection"""
     db = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
-    return db
+    try:
+        current_app
+        if 'db' not in g:
+            g.db = db
+            g.db.row_factory = sqlite3.Row
+            return g.db
+    except RuntimeError:
+        pass
+    finally:
+        return db
 
 
-def close_db(db):
-    """ close sqlite3.Connection"""
+def close_db(db=None):
+    """ close sqlite3.Connection
+    """
+    if db is None:
+        try:
+            current_app
+            db = g.pop('db', None)
+        except RuntimeError:
+            pass
     if db is not None:
-        db.close()
+        try:
+            db.close()
+        except AttributeError:
+            pass
 
 
 @contextmanager
@@ -110,6 +132,19 @@ def get_long_url_from_db(id=None, url=None):
         elif url and not id:
             instance = cur.execute(sql_url, (url,)).fetchone()
     return instance
+
+
+@click.command('init-db')
+@with_appcontext
+def init_db_command():
+    """Clear the existing data and create new tables."""
+    init_db()
+    click.echo('Initialized the database.')
+
+
+def init_app(app):
+    app.teardown_appcontext(close_db)
+    app.cli.add_command(init_db_command)
 
 
 if __name__ == '__main__':

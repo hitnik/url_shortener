@@ -1,6 +1,8 @@
+import sqlite3
 from contextlib import contextmanager
 from unittest import mock
 
+import pytest
 from app.db import (close_db, get_db, get_long_url_from_db, get_short_url,
                     get_short_url_by_long, init_db, insert_long_url,
                     insert_short_url, long_url_exist, short_url_exist)
@@ -38,7 +40,7 @@ def test_init_db(db_path):
     close_db(db)
 
 
-def test_get_db(db_path):
+def test_get_db(db_path, app):
     init_db(db_path=db_path)
     with mock.patch('app.db.DB_PATH', db_path):
         db = get_db()
@@ -48,8 +50,26 @@ def test_get_db(db_path):
         value_1 = cur.execute(sql, (1, 1)).fetchone()
         assert value_1 is not None
         assert value_1[2] == 'goo.gl'
-        cur.close()
         close_db(db)
+        with app.app_context():
+            db = get_db()
+            db.execute('SELECT * FROM long_urls')
+            close_db(db)
+
+
+def test_close_db(db_path, app):
+    init_db(db_path=db_path)
+    with mock.patch('app.db.DB_PATH', db_path):
+        with app.app_context():
+            db = get_db()
+            db.execute('SELECT 1')
+
+        with pytest.raises(sqlite3.ProgrammingError):
+            db.execute('SELECT 1')
+        db = get_db()
+        close_db(db)
+        with pytest.raises(sqlite3.ProgrammingError):
+            db.execute('SELECT 1')
 
 
 def test_long_url_exist(db_mock):
@@ -86,7 +106,7 @@ def test_get_long_url(db_mock):
         assert isinstance(get_long_url_from_db(id=1), tuple)
         assert get_long_url_from_db(id=1)[0] == 1
         assert isinstance(get_long_url_from_db(
-            url='https://www.google.com/'), tuple) 
+            url='https://www.google.com/'), tuple)
         assert get_long_url_from_db(url='https://www.google.com/')[0] == 1
 
 

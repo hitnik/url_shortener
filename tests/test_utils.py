@@ -4,6 +4,7 @@ import pytest
 from app.config import NETLOC, SCHEME
 from app.utils import Shortener, URLExistsError, URLNotFoundError
 
+from test_main import build_url
 from tests.test_db import manager_mock, script
 
 
@@ -32,5 +33,7 @@ def test_save_url(db_mock):
     with manager_mock(db_mock, 'db.get_db', 'db.db_manager'):
         with pytest.raises(URLExistsError):
             Shortener.save_url('goo.gl', 'https://www.google.com/')
-        short = Shortener.save_url('on.by/ptrer', 'http://www.onliner.by')
-        assert isinstance(short, str)
+        short = Shortener.save_url('onl', 'http://www.onliner.by')
+        assert short == build_url('onl')
+        assert Shortener.get_long_url(
+            build_url('onl')) == 'http://www.onliner.by'

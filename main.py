@@ -1,9 +1,8 @@
 import os
-from app.utils import (
-    parser, Shortener,
-    URLExistsError, URLNotFoundError
-)
+
+from app import app
 from app.db import DB_PATH, init_db
+from app.utils import Shortener, URLExistsError, URLNotFoundError, parser
 
 
 def main():

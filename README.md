@@ -22,13 +22,19 @@ cd url_shortener
 python3 -m pip install -r requirements.txt
 ```
 
-## Getting help
+<p>&nbsp;</p>
+
+## cli application interface
+
+<p>&nbsp;</p>
+
+### Getting help
 
 ```console
 python main.py -h
 ```
 
-## Application use
+### Application use
 
 To generate short url from long
 
@@ -47,3 +53,20 @@ To get short url from long url
 ```console
 python main.py <short url>
 ```
+
+<p>&nbsp;</p>
+
+## application web interface (version > 2.0)
+
+<p>&nbsp;</p>
+
+```console
+export FLASK_APP=main
+export SECRET_KEY=<your_secret>
+flask init-db
+flask run --port=80
+```
+
+<p>&nbsp;</p>
+
+### Access application at http://localhost
