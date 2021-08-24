@@ -35,4 +35,5 @@ def test_save_url(db_mock):
             Shortener.save_url('goo.gl', 'https://www.google.com/')
         short = Shortener.save_url('onl', 'http://www.onliner.by')
         assert short == build_url('onl')
-        assert Shortener.get_long_url(build_url('onl')) == 'http://www.onliner.by'
+        assert Shortener.get_long_url(
+            build_url('onl')) == 'http://www.onliner.by'

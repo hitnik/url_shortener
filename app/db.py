@@ -9,7 +9,7 @@ from flask.cli import with_appcontext
 from config import BASEDIR, DB_PATH
 
 
-def init_db(db_path):
+def init_db(db_path=DB_PATH):
     """init sqlite database, create sqlite file if needed """
     db = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)
     with open(os.path.join(BASEDIR, 'schema.sql'), 'rb') as file:
@@ -145,6 +145,7 @@ def init_db_command():
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+
 
 if __name__ == '__main__':
     db = init_db(DB_PATH)

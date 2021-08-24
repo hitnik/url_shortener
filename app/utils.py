@@ -1,13 +1,14 @@
 import argparse
 import textwrap
-from db import (insert_long_url, short_url_exist, get_short_url,
-                get_long_url_from_db, long_url_exist,
-                get_short_url_by_long, insert_short_url,
-                )
-import shortuuid
-from urllib.parse import urlunsplit, urlsplit
-from config import NETLOC, SCHEME
 from posixpath import basename
+from urllib.parse import urlsplit, urlunsplit
+
+import shortuuid
+
+from config import NETLOC, SCHEME
+from db import (get_long_url_from_db, get_short_url, get_short_url_by_long,
+                insert_long_url, insert_short_url, long_url_exist,
+                short_url_exist)
 
 
 class URLExistsError(Exception):
@@ -61,15 +62,6 @@ class Shortener:
     @classmethod
     def get_long_url(cls, short):
         """ get long url by short url
-
-        Args:
-            short (str):  short url
-
-        Raises:
-            Exception: Raises Exception when short url does not exists
-
-        Returns:
-            [str]: short url
         """
         short_path = cls().__parse_short_url(short)
         if short_url_exist(short_path):
@@ -84,12 +76,6 @@ class Shortener:
         """ Generates short url from long url.
             If long url exists in DB return existing short url,
             otherwise generate new short url
-
-        Args:
-            long (str): long url
-
-        Returns:
-            str: short url
         """
         if long_url_exist(long):
             long_inst = get_long_url_from_db(url=long)

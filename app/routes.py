@@ -1,10 +1,8 @@
+from flask import abort, flash, redirect, render_template, request
+
 from app import app
-from flask import (
-                    render_template, flash,
-                     request, abort, redirect
-                    )
-from utils import Shortener, URLExistsError, URLNotFoundError
 from db import short_url_exist
+from utils import Shortener, URLExistsError, URLNotFoundError
 
 
 @app.route('/', methods=['GET', 'POST'])

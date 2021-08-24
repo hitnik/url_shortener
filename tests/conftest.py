@@ -1,12 +1,13 @@
 import os
+import shutil
 import tempfile
 
 import pytest
+from app import app as create_app
 from app.db import init_db
 from app.utils import parser
-from app import app as create_app
-import shutil
 from flask import template_rendered
+
 
 @pytest.fixture
 def db_path():
@@ -18,6 +19,7 @@ def db_path():
             shutil.rmtree(db_path)
         except IOError:
             pass
+
 
 @pytest.fixture
 def db_mock(db_path):
@@ -32,14 +34,15 @@ def argparser():
 @pytest.fixture
 def app(db_path):
     create_app.config.from_mapping(
-        SERVER_NAME = 'localhost.localdomain',
-        TESTING = True,
-        DATABASE = db_path,
+        SERVER_NAME='localhost.localdomain',
+        TESTING=True,
+        DATABASE=db_path,
     )
     app = create_app
     with app.app_context():
         init_db(db_path)
     return app
+
 
 @pytest.fixture
 def client(app):

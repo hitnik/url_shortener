@@ -63,12 +63,12 @@ def test_close_db(db_path, app):
         with app.app_context():
             db = get_db()
             db.execute('SELECT 1')
-        
-        with pytest.raises(sqlite3.ProgrammingError) as e:
+
+        with pytest.raises(sqlite3.ProgrammingError):
             db.execute('SELECT 1')
         db = get_db()
         close_db(db)
-        with pytest.raises(sqlite3.ProgrammingError) as e:
+        with pytest.raises(sqlite3.ProgrammingError):
             db.execute('SELECT 1')
 
 
@@ -106,7 +106,7 @@ def test_get_long_url(db_mock):
         assert isinstance(get_long_url_from_db(id=1), tuple)
         assert get_long_url_from_db(id=1)[0] == 1
         assert isinstance(get_long_url_from_db(
-            url='https://www.google.com/'), tuple) 
+            url='https://www.google.com/'), tuple)
         assert get_long_url_from_db(url='https://www.google.com/')[0] == 1
 
 
