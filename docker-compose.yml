@@ -6,8 +6,14 @@ services:
     entrypoint: [ "sh","/usr/src/app/entrypoint.sh"]
     command: gunicorn --bind 0.0.0.0:5000 wsgi:app
     ports:
-      - 80:5000
+      - 5000:5000
     env_file:
       - .env
     volumes:
       - ./:/usr/src/app
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:5000
+    depends_on: 
+      - short
