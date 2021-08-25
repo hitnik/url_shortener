@@ -15,9 +15,11 @@ services:
       - ./app:/usr/src/app/app
     restart: on-failure
   nginx:
-    build: ./nginx
+    image: nginx:latest
     ports:
       - 80:5000
+    volumes: 
+      - ./nginx:/etc/nginx/conf.d/ 
     restart: on-failure
     depends_on: 
       - app
