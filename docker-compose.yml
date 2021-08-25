@@ -13,12 +13,12 @@ services:
       - .env
     volumes:
       - ./app:/usr/src/app/app
-    restart: always
+    restart: on-failure
   nginx:
     build: ./nginx
     ports:
       - 80:5000
-    restart: always
+    restart: on-failure
     depends_on: 
       - app
     

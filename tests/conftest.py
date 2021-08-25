@@ -61,3 +61,13 @@ def captured_templates(app):
         yield recorded
     finally:
         template_rendered.disconnect(record, app)
+
+
+def pytest_addoption(parser):
+    parser.addoption("--docker", action="store_true", default=False,
+                     help="run docker tests")
+
+
+@pytest.fixture(scope='session')
+def skip_docker(request):
+    return not request.config.option.docker
