@@ -1,0 +1,5 @@
+**/__pycache__/
+**/nginx/
+README.md
+db.png
+docker-compose.yml

@@ -1,8 +1,10 @@
 version: '3'
 
 services: 
-  short:
-    build: ./
+  app:
+    build: 
+      context: ./
+      dockerfile: ./Dockerfile.app
     entrypoint: [ "sh","/usr/src/app/entrypoint.sh"]
     command: gunicorn --bind 0.0.0.0:5000 wsgi:app
     ports:
@@ -10,10 +12,13 @@ services:
     env_file:
       - .env
     volumes:
-      - ./:/usr/src/app
+      - ./app:/usr/src/app/app
+    restart: always
   nginx:
     build: ./nginx
     ports:
       - 80:5000
+    restart: always
     depends_on: 
-      - short
+      - app
+    
