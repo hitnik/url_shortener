@@ -18,7 +18,7 @@ def test_index(client, app, db_mock,
         resp = client.get('/')
         assert resp.status_code == 200
         db_mock.executescript(script)
-        with manager_mock(db_mock, 'db.get_db', 'db.db_manager'):
+        with manager_mock(db_mock, 'db_utils.get_db', 'db_utils.db_manager'):
             resp = client.post('/', data=data)
             assert resp.status_code == 200
             template, context = captured_templates[1]
@@ -37,7 +37,7 @@ def test_index_raise(client, app, db_mock,
                      ):
     with app.app_context():
         db_mock.executescript(script)
-        with manager_mock(db_mock, 'db.get_db', 'db.db_manager'):
+        with manager_mock(db_mock, 'db_utils.get_db', 'db_utils.db_manager'):
             resp = client.post('/', data=data)
             assert resp.status_code == 400
             template, context = captured_templates[0]
@@ -55,7 +55,7 @@ def test_index_show_message(app, client, captured_templates):
 def test_redirect(app, client, db_mock):
     with app.app_context():
         db_mock.executescript(script)
-        with manager_mock(db_mock, 'db.get_db', 'db.db_manager'):
+        with manager_mock(db_mock, 'db_utils.get_db', 'db_utils.db_manager'):
             resp = client.get('/goo.gl')
             assert resp.status_code == 302
             resp = client.get('/abc')

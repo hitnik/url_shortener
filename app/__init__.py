@@ -19,7 +19,7 @@ def create_app(test_config=None):
                 DATABASE=DB_PATH,
             ) 
 
-    from db import init_app
+    from db_utils import init_app
 
     init_app(app)
 

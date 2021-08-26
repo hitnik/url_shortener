@@ -11,7 +11,7 @@ def build_url(path):
 
 def test_get_long_url(db_mock):
     db_mock.executescript(script)
-    with manager_mock(db_mock, 'db.get_db', 'db.db_manager'):
+    with manager_mock(db_mock, 'db_utils.get_db', 'db_utils.db_manager'):
         with pytest.raises(URLNotFoundError):
             Shortener.get_long_url('raise')
         inst = Shortener.get_long_url('goo.gl')
@@ -21,7 +21,7 @@ def test_get_long_url(db_mock):
 
 def test_get_short_url(db_mock):
     db_mock.executescript(script)
-    with manager_mock(db_mock, 'db.get_db', 'db.db_manager'):
+    with manager_mock(db_mock, 'db_utils.get_db', 'db_utils.db_manager'):
         inst = Shortener.gen_short_url('https://www.google.com/')
         assert isinstance(inst, str)
         assert inst == urlunsplit((SCHEME, NETLOC, 'goo.gl', '', ''))
@@ -31,7 +31,7 @@ def test_get_short_url(db_mock):
 
 def test_save_url(db_mock):
     db_mock.executescript(script)
-    with manager_mock(db_mock, 'db.get_db', 'db.db_manager'):
+    with manager_mock(db_mock, 'db_utils.get_db', 'db_utils.db_manager'):
         with pytest.raises(URLExistsError):
             Shortener.save_url('goo.gl', 'https://www.google.com/')
         short = Shortener.save_url('onl', 'http://www.onliner.by')

@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, flash, redirect, render_template, request
 
-from db import short_url_exist
+from db_utils import short_url_exist
 from utils import Shortener, URLExistsError, URLNotFoundError
 
 bp = Blueprint('', __name__, template_folder='templates')
@@ -32,6 +32,16 @@ def index():
         else:
             flash('At least one field should be filled.')
     return render_template('index.html', long=long_out, short=short_out), 200
+
+
+def page_not_found(e):
+    """400 error handling view"""
+    return render_template('error.html', message=e), 400
+
+
+def error_404(e):
+    """404 error handling view"""
+    return render_template('error.html', message=e), 404
 
 
 @bp.route('/<short>')

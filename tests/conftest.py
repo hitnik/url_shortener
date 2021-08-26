@@ -4,7 +4,7 @@ import tempfile
 
 import pytest
 from app import create_app
-from app.db import init_db
+from app.db_utils import init_db
 from app.utils import parser
 from flask import template_rendered
 

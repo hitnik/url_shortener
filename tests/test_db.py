@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from unittest import mock
 
 import pytest
-from app.db import (close_db, get_db, get_long_url_from_db, get_short_url,
+from app.db_utils import (close_db, get_db, get_long_url_from_db, get_short_url,
                     get_short_url_by_long, init_db, insert_long_url,
                     insert_short_url, long_url_exist, short_url_exist)
 
@@ -42,7 +42,7 @@ def test_init_db(db_path):
 
 def test_get_db(db_path, app):
     init_db(db_path=db_path)
-    with mock.patch('app.db.DB_PATH', db_path):
+    with mock.patch('app.db_utils.DB_PATH', db_path):
         db = get_db()
         db.executescript(script)
         cur = db.cursor()
@@ -59,34 +59,34 @@ def test_get_db(db_path, app):
 
 def test_long_url_exist(db_mock):
     db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):
+    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
         assert long_url_exist('') is False
         assert long_url_exist('https://www.youtube.com') is True
 
 
 def test_insert(db_mock):
-    with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):
+    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
         assert insert_long_url('www.test.ru') == 1
         assert insert_short_url('short.ru/a23', 1) == 1
 
 
 def test_get_short_url(db_mock):
     db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):
+    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
         assert isinstance(get_short_url('goo.gl'), tuple)
         assert get_short_url('goo.gl')[0] == 1
 
 
 def test_short_url_exist(db_mock):
     db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):
+    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
         assert short_url_exist('') is False
         assert short_url_exist('goo.gl') is True
 
 
 def test_get_long_url(db_mock):
     db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):
+    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
         assert get_long_url_from_db() is None
         assert isinstance(get_long_url_from_db(id=1), tuple)
         assert get_long_url_from_db(id=1)[0] == 1
@@ -97,6 +97,6 @@ def test_get_long_url(db_mock):
 
 def test_get_short_by_long(db_mock):
     db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):
+    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
         assert isinstance(get_short_url_by_long(1), tuple)
         assert get_short_url_by_long(2)[0] == 2
