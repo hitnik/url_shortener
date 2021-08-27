@@ -27,7 +27,8 @@ def create_app(test_config=None):
 
     db.init_app(app)
     migrate.init_app(app, db, directory=os.path.join(BASEDIR, 'migrations'))
-    from app import routes
+
+    from app import routes, models
 
     app.register_blueprint(routes.bp)
 
