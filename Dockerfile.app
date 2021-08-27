@@ -1,4 +1,4 @@
-FROM python:3.9.6-alpine
+FROM python:3.9-slim-bullseye
 
 # set work directory
 WORKDIR /usr/src/app
@@ -11,7 +11,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV FLASK_APP=wsgi.py
 ENV FLASK_ENV=production
-
 
 #install dependencies
 RUN pip install -U pip
