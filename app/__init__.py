@@ -3,11 +3,13 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from flask import Flask
+from flask_migrate import Migrate, migrate
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+migrate = Migrate()
 
-from config import DB_PATH
+from config import BASEDIR, DB_PATH
 
 
 def create_app(test_config=None):
@@ -24,8 +26,7 @@ def create_app(test_config=None):
     app.config.update(SQLALCHEMY_TRACK_MODIFICATIONS=False)    
 
     db.init_app(app)
-
-
+    migrate.init_app(app, db, directory=os.path.join(BASEDIR, 'migrations'))
     from app import routes
 
     app.register_blueprint(routes.bp)
