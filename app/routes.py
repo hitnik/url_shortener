@@ -1,11 +1,11 @@
-from flask import abort, flash, redirect, render_template, request
+from flask import Blueprint, abort, flash, redirect, render_template, request
 
-from app import app
 from db import short_url_exist
 from utils import Shortener, URLExistsError, URLNotFoundError
 
+bp = Blueprint('', __name__, template_folder='templates')
 
-@app.route('/', methods=['GET', 'POST'])
+@bp.route('/', methods=['GET', 'POST'])
 def index():
     """index view of url_shortener app"""
 
@@ -34,16 +34,19 @@ def index():
     return render_template('index.html', long=long_out, short=short_out), 200
 
 
-@app.errorhandler(400)
-def page_not_found(e):
-    """400 error handling view"""
-    return render_template('400.html', message=e), 400
-
-
-@app.route('/<short>')
+@bp.route('/<short>')
 def redirect_short(short):
     """redirect by short url view"""
     if short_url_exist(short):
         long_url = Shortener.get_long_url(short)
         return redirect(long_url)
-    abort(400, description=URLNotFoundError().message)
+    abort(404, description="Page not found.")
+
+
+def bad_request(e):
+    """400 error handling view"""
+    return render_template('error.html', message=e), 400
+
+def page_not_found(e):
+    """404 error handling view"""
+    return render_template('error.html', message=e), 404

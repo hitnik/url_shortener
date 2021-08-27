@@ -20,16 +20,7 @@ def init_db(db_path=DB_PATH):
 def get_db():
     """returns sqlite3 connection"""
     db = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
-    try:
-        current_app
-        if 'db' not in g:
-            g.db = db
-            g.db.row_factory = sqlite3.Row
-            return g.db
-    except RuntimeError:
-        pass
-    finally:
-        return db
+    return db
 
 
 def close_db(db=None):
