@@ -3,6 +3,9 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 from config import DB_PATH
 
@@ -16,12 +19,11 @@ def create_app(test_config=None):
     else:
         app.config.from_mapping(
                 SECRET_KEY=os.environ.get("SECRET_KEY", "foo"),
-                DATABASE=DB_PATH,
+                SQLALCHEMY_DATABASE_URI='sqlite:///' + DB_PATH,
             ) 
+    app.config.update(SQLALCHEMY_TRACK_MODIFICATIONS=False)    
 
-    from db_utils import init_app
-
-    init_app(app)
+    db.init_app(app)
 
 
     from app import routes

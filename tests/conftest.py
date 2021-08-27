@@ -36,11 +36,9 @@ def app(db_path):
     app = create_app({
                         'SERVER_NAME':'localhost.localdomain',
                         'TESTING': True,
-                        'DATABASE': db_path,
+                        'SQLALCHEMY_DATABASE_URI':'sqlite:///' + db_path,
                         'SECRET_KEY': 'test'
                         })
-    with app.app_context():
-        init_db(db_path)
     return app
 
 
