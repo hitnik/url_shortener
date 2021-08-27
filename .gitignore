@@ -133,3 +133,6 @@ dmypy.json
 
 #sqlite db
 db.sqlite3
+
+# docker-compose dev file
+dev-compose.yml

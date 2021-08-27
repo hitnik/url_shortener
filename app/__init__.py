@@ -19,9 +19,19 @@ def create_app(test_config=None):
     if test_config:
         app.config.from_mapping(test_config)
     else:
+        db_type = os.environ.get('DATABASE', 'sqlite')
+        if db_type == 'postgres':
+            user = os.environ["POSTGRES_USER"]
+            pswd = os.environ["POSTGRES_PASSWORD"]
+            host = os.environ['PG_HOST']
+            port = os.environ.get('PG_PORT', 5432)
+            pg_db = os.environ['POSTGRES_DB']
+            db_uri = f'postgresql://{user}:{pswd}@{host}:{port}/{pg_db}'
+        else:
+            db_uri = 'sqlite:///' + DB_PATH
         app.config.from_mapping(
                 SECRET_KEY=os.environ.get("SECRET_KEY", "foo"),
-                SQLALCHEMY_DATABASE_URI='sqlite:///' + DB_PATH,
+                SQLALCHEMY_DATABASE_URI=db_uri,
             )
     app.config.update(SQLALCHEMY_TRACK_MODIFICATIONS=False)
 

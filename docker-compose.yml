@@ -13,14 +13,24 @@ services:
       - .env
     volumes:
       - ./app:/usr/src/app/app
-    restart: on-failure
+    restart: unless-stopped
+    depends_on: 
+      - db
   nginx:
     image: nginx:latest
     ports:
       - 80:5000
     volumes: 
       - ./nginx:/etc/nginx/conf.d/ 
-    restart: on-failure
+    restart: unless-stopped
     depends_on: 
       - app
-    
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - pg_data:/var/lib/postgre sql/data/
+    env_file:
+      - .env
+    restart: unless-stopped
+volumes:
+  pg_data:
