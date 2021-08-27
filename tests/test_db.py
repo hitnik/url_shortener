@@ -57,21 +57,6 @@ def test_get_db(db_path, app):
             close_db(db)
 
 
-def test_close_db(db_path, app):
-    init_db(db_path=db_path)
-    with mock.patch('app.db.DB_PATH', db_path):
-        with app.app_context():
-            db = get_db()
-            db.execute('SELECT 1')
-
-        with pytest.raises(sqlite3.ProgrammingError):
-            db.execute('SELECT 1')
-        db = get_db()
-        close_db(db)
-        with pytest.raises(sqlite3.ProgrammingError):
-            db.execute('SELECT 1')
-
-
 def test_long_url_exist(db_mock):
     db_mock.executescript(script)
     with manager_mock(db_mock, 'app.db.get_db', 'app.db.db_manager'):

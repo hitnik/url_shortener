@@ -41,7 +41,7 @@ def test_index_raise(client, app, db_mock,
             resp = client.post('/', data=data)
             assert resp.status_code == 400
             template, context = captured_templates[0]
-            assert template.name == "400.html"
+            assert template.name == "error.html"
             assert error.message in str(context['message'])
 
 
@@ -59,4 +59,4 @@ def test_redirect(app, client, db_mock):
             resp = client.get('/goo.gl')
             assert resp.status_code == 302
             resp = client.get('/abc')
-            assert resp.status_code == 400
+            assert resp.status_code == 404

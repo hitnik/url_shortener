@@ -3,7 +3,7 @@ import shutil
 import tempfile
 
 import pytest
-from app import app as create_app
+from app import create_app
 from app.db import init_db
 from app.utils import parser
 from flask import template_rendered
@@ -33,12 +33,12 @@ def argparser():
 
 @pytest.fixture
 def app(db_path):
-    create_app.config.from_mapping(
-        SERVER_NAME='localhost.localdomain',
-        TESTING=True,
-        DATABASE=db_path,
-    )
-    app = create_app
+    app = create_app({
+                        'SERVER_NAME':'localhost.localdomain',
+                        'TESTING': True,
+                        'DATABASE': db_path,
+                        'SECRET_KEY': 'test'
+                        })
     with app.app_context():
         init_db(db_path)
     return app

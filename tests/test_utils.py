@@ -4,9 +4,10 @@ import pytest
 from app.config import NETLOC, SCHEME
 from app.utils import Shortener, URLExistsError, URLNotFoundError
 
-from test_main import build_url
 from tests.test_db import manager_mock, script
 
+def build_url(path):
+    return urlunsplit((SCHEME, NETLOC, path, '', ''))
 
 def test_get_long_url(db_mock):
     db_mock.executescript(script)
