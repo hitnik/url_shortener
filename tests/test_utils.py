@@ -8,6 +8,7 @@ from app.utils import Shortener, URLExistsError, URLNotFoundError
 def build_url(path):
     return urlunsplit((SCHEME, NETLOC, path, '', ''))
 
+
 def test_get_long_url(app):
     with app.app_context():
         with pytest.raises(URLNotFoundError):

@@ -1,5 +1,3 @@
-import argparse
-import textwrap
 from posixpath import basename
 from urllib.parse import urlsplit, urlunsplit
 

@@ -5,6 +5,7 @@ from utils import Shortener, URLExistsError, URLNotFoundError
 
 bp = Blueprint('', __name__, template_folder='templates')
 
+
 @bp.route('/', methods=['GET', 'POST'])
 def index():
     """index view of url_shortener app"""
@@ -34,16 +35,6 @@ def index():
     return render_template('index.html', long=long_out, short=short_out), 200
 
 
-def page_not_found(e):
-    """400 error handling view"""
-    return render_template('error.html', message=e), 400
-
-
-def error_404(e):
-    """404 error handling view"""
-    return render_template('error.html', message=e), 404
-
-
 @bp.route('/<short>')
 def redirect_short(short):
     """redirect by short url view"""
@@ -56,6 +47,7 @@ def redirect_short(short):
 def bad_request(e):
     """400 error handling view"""
     return render_template('error.html', message=e), 400
+
 
 def page_not_found(e):
     """404 error handling view"""
