@@ -6,4 +6,6 @@ then
     flask init-db
 fi
 
+flask db upgrade
+
 exec "$@"
