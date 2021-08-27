@@ -3,10 +3,11 @@ import shutil
 import tempfile
 
 import pytest
-from app import create_app
-from app.db_utils import init_db
-from app.utils import parser
 from flask import template_rendered
+from flask_migrate import upgrade
+
+from app import create_app, db
+from app.models import LongUrls, ShortUrls
 
 
 @pytest.fixture
@@ -22,23 +23,21 @@ def db_path():
 
 
 @pytest.fixture
-def db_mock(db_path):
-    return init_db(db_path)
-
-
-@pytest.fixture
-def argparser():
-    return parser()
-
-
-@pytest.fixture
 def app(db_path):
     app = create_app({
-                        'SERVER_NAME':'localhost.localdomain',
+                        'SERVER_NAME': 'localhost.localdomain',
                         'TESTING': True,
-                        'SQLALCHEMY_DATABASE_URI':'sqlite:///' + db_path,
+                        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + db_path,
                         'SECRET_KEY': 'test'
                         })
+    with app.app_context():
+        upgrade()
+        l1 = LongUrls(long_url='https://www.google.com/')
+        l2 = LongUrls(long_url='https://www.youtube.com')
+        sh1 = ShortUrls(short='goo.gl', long=l1)
+        sh2 = ShortUrls(short='yu.tu', long=l2)
+        db.session.add_all((l1, l2, sh1, sh2))
+        db.session.commit()
     return app
 
 

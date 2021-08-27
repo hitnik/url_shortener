@@ -84,8 +84,8 @@ class Shortener:
         else:
             uuid = shortuuid.uuid(name=long)[:7]
             short_url = urlunsplit((SCHEME, NETLOC, uuid, '', ''))
-            long_id = insert_long_url(long)
-            insert_short_url(uuid, long_id)
+            long_inst = insert_long_url(long)
+            insert_short_url(uuid, long_inst)
             return short_url
 
     @staticmethod
@@ -93,10 +93,10 @@ class Shortener:
         if not short_url_exist(short):
             if long_url_exist(long):
                 long_inst = get_long_url_from_db(url=long)
-                insert_short_url(short, long_inst[0])
+                insert_short_url(short, long_inst)
             else:
-                long_id = insert_long_url(long)
-                insert_short_url(short, long_id)
+                long_inst = insert_long_url(long)
+                insert_short_url(short, long_inst)
             return urlunsplit((SCHEME, NETLOC, short, '', ''))
         else:
             raise URLExistsError

@@ -1,102 +1,53 @@
-import sqlite3
-from contextlib import contextmanager
-from unittest import mock
-
-import pytest
-from app.db_utils import (close_db, get_db, get_long_url_from_db, get_short_url,
-                    get_short_url_by_long, init_db, insert_long_url,
-                    insert_short_url, long_url_exist, short_url_exist)
-
-script = """
-INSERT INTO long_urls (id, long_url)
-VALUES
-  (1, 'https://www.google.com/'),
-  (2, 'https://www.youtube.com');
-INSERT INTO short_urls (id, long_id, short)
-VALUES
-  (1, 1, 'goo.gl'),
-  (2, 2, 'yu.tu');
-"""
+from app.db_utils import (get_short_url, insert_long_url, insert_short_url,
+                          long_url_exist, short_url_exist)
+from app.models import LongUrls, ShortUrls
 
 
-@contextmanager
-def manager_mock(db_mock, init_db, db_manager):
-    with mock.patch(init_db) as get_db:
-        get_db.return_value = db_mock
-        with mock.patch(db_manager) as manager:
-            manager.return_value = db_mock
-            yield lambda: manager
-
-
-def test_init_db(db_path):
-    db = init_db(db_path)
-    db.executescript(script)
-    cur = db.cursor()
-    sql = 'SELECT * FROM short_urls WHERE long_id = ? AND id = ?;'
-    value_1 = cur.execute(sql, (1, 1)).fetchone()
-    assert value_1 is not None
-    assert value_1[2] == 'goo.gl'
-    cur.close()
-    close_db(db)
-
-
-def test_get_db(db_path, app):
-    init_db(db_path=db_path)
-    with mock.patch('app.db_utils.DB_PATH', db_path):
-        db = get_db()
-        db.executescript(script)
-        cur = db.cursor()
-        sql = 'SELECT * FROM short_urls WHERE long_id = ? AND id = ?;'
-        value_1 = cur.execute(sql, (1, 1)).fetchone()
-        assert value_1 is not None
-        assert value_1[2] == 'goo.gl'
-        close_db(db)
-        with app.app_context():
-            db = get_db()
-            db.execute('SELECT * FROM long_urls')
-            close_db(db)
-
-
-def test_long_url_exist(db_mock):
-    db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
+def test_long_url_exist(app):
+    with app.app_context():
         assert long_url_exist('') is False
         assert long_url_exist('https://www.youtube.com') is True
 
 
-def test_insert(db_mock):
-    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
-        assert insert_long_url('www.test.ru') == 1
-        assert insert_short_url('short.ru/a23', 1) == 1
+def test_insert_long(app):
+    with app.app_context():
+        long_inst = insert_long_url('www.test.ru')
+        assert isinstance(long_inst, LongUrls)
+        assert long_inst.long_url == 'www.test.ru'
 
 
-def test_get_short_url(db_mock):
-    db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
-        assert isinstance(get_short_url('goo.gl'), tuple)
-        assert get_short_url('goo.gl')[0] == 1
+def test_insert_short(app):
+    with app.app_context():
+        long_inst = LongUrls.query.filter_by(id=1).first()
+        sh = insert_short_url('123', long_inst)
+        assert isinstance(sh, ShortUrls)
+        assert sh.long.id == 1
 
 
-def test_short_url_exist(db_mock):
-    db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
+def test_short_url_exist(app):
+    with app.app_context():
         assert short_url_exist('') is False
         assert short_url_exist('goo.gl') is True
 
 
-def test_get_long_url(db_mock):
-    db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
-        assert get_long_url_from_db() is None
-        assert isinstance(get_long_url_from_db(id=1), tuple)
-        assert get_long_url_from_db(id=1)[0] == 1
-        assert isinstance(get_long_url_from_db(
-            url='https://www.google.com/'), tuple)
-        assert get_long_url_from_db(url='https://www.google.com/')[0] == 1
+def test_get_short_url(app):
+    with app.app_context():
+        sh = get_short_url('goo.gl')
+        assert isinstance(sh, ShortUrls)
+        assert sh.id == 1
 
 
-def test_get_short_by_long(db_mock):
-    db_mock.executescript(script)
-    with manager_mock(db_mock, 'app.db_utils.get_db', 'app.db_utils.db_manager'):
-        assert isinstance(get_short_url_by_long(1), tuple)
-        assert get_short_url_by_long(2)[0] == 2
+def test_get_short_by_long(app):
+    with app.app_context():
+        long_inst = LongUrls.query.first()
+        sh = ShortUrls.query.filter_by(long=long_inst).first()
+        assert isinstance(sh, ShortUrls)
+        assert sh.id == 1
+
+
+def test_get_long_url(app):
+    with app.app_context():
+        long_inst = LongUrls.query.filter_by(
+            long_url='https://www.google.com/').first()
+        assert isinstance(long_inst, LongUrls)
+        assert long_inst.id == 1
